@@ -91,6 +91,9 @@
                 res[i] = toJSON(object[i]);
             }
         }
+        else if (NODE_TYPES[object.nodeType] !== "undefined"){
+             res = computeRectForNode(object);
+        }
         else
         {
             res = object;
@@ -116,6 +119,31 @@
                 res[i] = nodes.snapshotItem(i);
             }
         }
+        else if (queryType==='iframe')
+        {
+                var frames = document.querySelectorAll("iframe");
+                var frameLength = frames.length;
+                if(exp.indexOf("|") == -1)
+                {
+                    if(frameLength>0){
+                        var nodes = frames[0].contentWindow.document.body.querySelectorAll(exp);
+                        for (i=0,N=nodes.length;i<N;i++)
+                        {
+                            res[i] = nodes[i];
+                        }
+                    }
+                }else
+                {
+                    var expArr=exp.split("|");
+                    var newExp=expArr[1];
+                    var iframeIndex = parseInt(expArr[0]);
+                    var nodes = frames[iframeIndex].contentWindow.document.body.querySelectorAll(newExp);
+                    for (i=0,N=nodes.length;i<N;i++)
+                    {
+                        res[i] = nodes[i];
+                    }
+                }
+         }
         else
         {
             res = document.querySelectorAll(exp);
